@@ -83,12 +83,16 @@
     to { opacity: 1; transform: scale(1); }
   }
   @keyframes devinPulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,209,102,0.7)); }
-    50% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(255,209,102,0.9)); }
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(255,209,102,0.7)); }
+    50% { filter: drop-shadow(0 0 18px rgba(255,209,102,0.95)); }
   }
   @keyframes devinRingRotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+  }
+  @keyframes devinCirclePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
   }
   @keyframes breathe {
     0%, 100% { opacity: 0.35; }
@@ -185,14 +189,15 @@
     filter: brightness(1.4) drop-shadow(0 0 14px currentColor); transform: scale(1.15);
   }
   .product-node.selected .node-label { opacity: 1 !important; }
-  .node-anim { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  .node-anim { animation: fadeIn 0.5s ease-out both; }
   .node-label {
     font-size: 10px; font-weight: 600; dominant-baseline: central; text-anchor: middle;
     pointer-events: none; fill: white; opacity: 0.85; letter-spacing: 0.2px; transition: opacity 0.2s;
   }
 
   /* Devin star */
-  .devin-node { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both, devinPulse 3s 1.2s ease-in-out infinite; transform-origin: center; }
+  .devin-node { animation: fadeIn 0.5s ease-out both; }
+  .devin-pulse-wrapper { animation: devinCirclePulse 3s 1.2s ease-in-out infinite, devinPulse 3s 1.2s ease-in-out infinite; transform-origin: center; }
   .devin-node .node-circle { fill: var(--devin-gold); }
   .devin-node .node-label { font-size: 11px; font-weight: 800; fill: #0a0d14; opacity: 1; }
   .devin-ring-rotate { animation: devinRingRotate 20s linear infinite; transform-origin: center; }
@@ -396,6 +401,68 @@
   .zone-key-dot { width: 12px; height: 12px; border-radius: 3px; opacity: 0.8; }
   .zone-key-text { font-size: 11px; color: var(--text-dim); font-weight: 300; }
 
+  /* ANALOGY SECTION */
+  .analogy-section { padding: 0 48px; margin-top: 0; }
+  .analogy-card {
+    max-width: 960px; margin: 0 auto;
+    background: linear-gradient(135deg, var(--surface-glass) 0%, rgba(24,31,48,0.5) 100%);
+    border: 1px solid var(--border-glass); border-radius: 18px;
+    padding: 40px 44px;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    position: relative; overflow: hidden;
+  }
+  .analogy-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--devin-gold));
+    border-radius: 18px 18px 0 0;
+  }
+  .analogy-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+  }
+  .analogy-icon { font-size: 28px; }
+  .analogy-title {
+    font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, var(--devin-gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .analogy-body { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: stretch; }
+  .analogy-block {
+    padding: 24px; border-radius: 12px; position: relative;
+  }
+  .analogy-block.gps {
+    background: rgba(79,142,247,0.06); border: 1px solid rgba(79,142,247,0.15);
+  }
+  .analogy-block.sdc {
+    background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.2);
+  }
+  .analogy-label {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .analogy-block.gps .analogy-label { color: var(--blue); }
+  .analogy-block.sdc .analogy-label { color: var(--devin-gold); }
+  .analogy-label-sub { font-weight: 400; opacity: 0.6; text-transform: none; letter-spacing: 0; }
+  .analogy-block p {
+    font-size: 14px; line-height: 1.75; color: var(--text-dim); font-weight: 300;
+  }
+  .analogy-block p strong { color: var(--text); font-weight: 600; }
+  .analogy-block p em { font-style: italic; color: var(--text); }
+  .analogy-divider {
+    display: flex; align-items: center; justify-content: center;
+    writing-mode: vertical-lr; text-orientation: mixed;
+    position: relative;
+  }
+  .analogy-divider span {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--text-faint); background: var(--bg); padding: 8px 0;
+    position: relative;
+  }
+  .analogy-divider::before {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+    background: var(--border); transform: translateX(-50%);
+  }
+
   /* RESPONSIVE */
   @media (max-width: 1100px) {
     .main { grid-template-columns: 1fr; }
@@ -405,6 +472,8 @@
     .matrix-section { padding: 24px; }
     .devin-banner { padding: 24px; }
     .footer { padding: 20px 24px; }
+    .analogy-section { padding: 0 24px; }
+    .analogy-card { padding: 32px 28px; }
   }
   @media (max-width: 680px) {
     .header { padding: 20px 16px 16px; flex-direction: column; gap: 12px; }
@@ -421,11 +490,30 @@
     .matrix-source { margin-left: 0; }
     .footer { padding: 16px; flex-direction: column; text-align: center; }
     .footer-right { flex-wrap: wrap; justify-content: center; }
+    .analogy-section { padding: 0 16px; }
+    .analogy-card { padding: 24px 20px; }
+    .analogy-body { grid-template-columns: 1fr; gap: 0; }
+    .analogy-divider { writing-mode: horizontal-tb; padding: 8px 0; }
+    .analogy-divider::before { top: 50%; bottom: auto; left: 0; right: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+    .analogy-title { font-size: 20px; }
+    .analogy-block { padding: 18px; }
+    .analogy-block p { font-size: 13px; }
   }
   @media (max-width: 400px) {
     .header-left h1 { font-size: 19px; }
     .node-label { font-size: 8px; }
     .circle-label { font-size: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .node-anim, .devin-node { opacity: 1 !important; }
+    .scroll-reveal { opacity: 1; transform: none; }
+    .matrix-table tbody tr { opacity: 1; transform: none; }
   }
 
   .product-node:focus-visible .node-circle {
@@ -541,9 +629,11 @@
         <g class="product-node devin-node node-anim delay-7" data-product="devin" transform="translate(392, 255)" tabindex="0" role="button" aria-label="Devin by Cognition Labs">
           <circle class="hover-glow-ring" r="38" stroke="#ffd166"/>
           <circle class="devin-ring-rotate" r="46" fill="none" stroke="#ffd166" stroke-width="1" stroke-dasharray="4 3" opacity="0.45"/>
-          <circle class="node-circle" r="38" opacity="1"/>
-          <text class="node-label" y="-6" font-size="12">Devin</text>
-          <text class="node-label" y="7" font-size="9" opacity="0.85">(Cognition)</text>
+          <g class="devin-pulse-wrapper">
+            <circle class="node-circle" r="38" opacity="1"/>
+            <text class="node-label" y="-6" font-size="12">Devin</text>
+            <text class="node-label" y="7" font-size="9" opacity="0.85">(Cognition)</text>
+          </g>
         </g>
 
         <line x1="392" y1="209" x2="392" y2="168" stroke="#ffd166" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" class="anim-fade-in delay-8"/>
@@ -597,6 +687,26 @@
       <div class="legend-item"><div class="legend-dot" style="background:var(--blue);opacity:0.8;"></div><span class="legend-text">Copilot-first tools</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--teal);opacity:0.8;"></div><span class="legend-text">Autonomous-first tools</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--purple);opacity:0.8;"></div><span class="legend-text">Enterprise-integrated tools</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="analogy-section scroll-reveal">
+  <div class="analogy-card">
+    <div class="analogy-header">
+      <span class="analogy-icon" aria-hidden="true">&#x1F697;</span>
+      <h2 class="analogy-title">The GPS vs.&nbsp;Self-Driving Car</h2>
+    </div>
+    <div class="analogy-body">
+      <div class="analogy-block gps">
+        <div class="analogy-label">The GPS <span class="analogy-label-sub">(every other tool)</span></div>
+        <p>Every other tool on the market &mdash; Cursor, GitHub Copilot, Windsurf &mdash; is a <strong>GPS</strong>. It&rsquo;s genuinely useful. It gives you turn-by-turn directions, warns you about traffic, suggests the fastest route. But <em>you</em> are still driving every inch of the road. Hands on the wheel, eyes on the road, foot on the pedal. The moment you stop paying attention, you crash.</p>
+      </div>
+      <div class="analogy-divider" aria-hidden="true"><span>vs</span></div>
+      <div class="analogy-block sdc">
+        <div class="analogy-label">The Self-Driving Car <span class="analogy-label-sub">(Devin)</span></div>
+        <p>Devin is the <strong>self-driving car</strong>. You set the destination &mdash; a JIRA ticket, a feature request, a migration task &mdash; and it drives itself there. You can go do something else. It handles the lanes, the turns, the unexpected detours. You check in when it arrives and decide if you want to go somewhere new.</p>
+      </div>
     </div>
   </div>
 </div>
