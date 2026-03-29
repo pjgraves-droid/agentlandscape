@@ -154,17 +154,16 @@
   /* MAIN LAYOUT */
   .main {
     display: grid; grid-template-columns: 1fr 360px; gap: 0;
-    min-height: calc(100vh - 140px);
   }
 
   /* VENN CANVAS */
-  .venn-area { padding: 40px 32px 32px 48px; position: relative; }
+  .venn-area { padding: 24px 32px 16px 48px; position: relative; }
   .venn-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; }
   #particle-canvas {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; z-index: 10;
   }
-  svg#venn { width: 100%; height: auto; overflow: visible; }
+  svg#venn { width: 100%; height: auto; }
 
   .circle-fill-anim { animation: fadeIn 0.8s ease-out both; }
   .circle-ring-anim { animation: fadeIn 0.8s ease-out both; }
@@ -210,6 +209,7 @@
     display: flex; flex-direction: column; gap: 0; overflow-y: auto;
     background: var(--surface-glass);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    position: sticky; top: 0; max-height: 100vh;
   }
   .sidebar-title {
     font-size: 11px; font-weight: 700; letter-spacing: 1px;
@@ -539,7 +539,7 @@
   <div class="venn-area">
     <div class="venn-container">
       <canvas id="particle-canvas" aria-hidden="true"></canvas>
-      <svg id="venn" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venn diagram showing competitive positioning of agentic coding platforms">
+      <svg id="venn" viewBox="-10 -5 700 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venn diagram showing competitive positioning of agentic coding platforms">
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="8" result="blur"/>
