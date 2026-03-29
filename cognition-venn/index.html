@@ -13,7 +13,10 @@
     --bg: #0a0d14;
     --surface: #111522;
     --surface2: #181f30;
+    --surface-glass: rgba(17,21,34,0.65);
+    --surface2-glass: rgba(24,31,48,0.7);
     --border: rgba(255,255,255,0.07);
+    --border-glass: rgba(255,255,255,0.1);
     --teal: #00c9b1;
     --teal-dim: rgba(0,201,177,0.12);
     --teal-glow: rgba(0,201,177,0.25);
@@ -28,6 +31,8 @@
     --devin-gold: #ffd166;
   }
 
+  html { scroll-behavior: smooth; }
+
   html, body {
     background: var(--bg);
     color: var(--text);
@@ -36,161 +41,202 @@
     overflow-x: hidden;
   }
 
-  /* ── HEADER ── */
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(79,142,247,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 75% 20%, rgba(155,123,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 70% at 50% 80%, rgba(0,201,177,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 40% at 50% 40%, rgba(255,209,102,0.04) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body > * { position: relative; z-index: 1; }
+
+  /* ACCENT BAR */
+  .accent-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--blue), var(--purple), var(--devin-gold), var(--teal));
+    background-size: 300% 100%;
+    animation: accentShift 8s linear infinite;
+  }
+  @keyframes accentShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes devinPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,209,102,0.7)); }
+    50% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(255,209,102,0.9)); }
+  }
+  @keyframes devinRingRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.55; }
+  }
+  @keyframes slideInRow {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+  }
+
+  .anim-fade-in-down { animation: fadeInDown 0.6s ease-out both; }
+  .anim-fade-in { animation: fadeIn 0.5s ease-out both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+  .delay-7 { animation-delay: 0.7s; }
+  .delay-8 { animation-delay: 0.8s; }
+
+  /* Scroll reveal */
+  .scroll-reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* HEADER */
   .header {
-    padding: 40px 48px 24px;
+    padding: 32px 48px 24px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    background: var(--surface-glass);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   }
   .header-left h1 {
-    font-size: 26px; font-weight: 800; letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #fff 0%, var(--teal) 100%);
+    font-size: 34px; font-weight: 800; letter-spacing: -0.8px;
+    background: linear-gradient(135deg, #fff 0%, var(--teal) 60%, var(--devin-gold) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 6px;
+    background-clip: text; margin-bottom: 8px; line-height: 1.2;
   }
   .header-left p {
-    font-size: 14px; color: var(--text-dim); max-width: 560px; line-height: 1.6;
+    font-size: 14px; color: var(--text-dim); max-width: 560px; line-height: 1.7; font-weight: 300;
   }
   .badge {
     display: inline-flex; align-items: center; gap: 6px;
-    background: var(--teal-dim); border: 1px solid var(--teal);
+    background: var(--teal-dim); border: 1px solid rgba(0,201,177,0.4);
     color: var(--teal); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
-    padding: 5px 12px; border-radius: 20px; white-space: nowrap;
-    text-transform: uppercase;
+    padding: 5px 14px; border-radius: 20px; white-space: nowrap; text-transform: uppercase;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   }
 
-  /* ── MAIN LAYOUT ── */
+  /* MAIN LAYOUT */
   .main {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 0;
-    min-height: calc(100vh - 120px);
+    display: grid; grid-template-columns: 1fr 360px; gap: 0;
+    min-height: calc(100vh - 140px);
   }
 
-  /* ── VENN CANVAS ── */
-  .venn-area {
-    padding: 40px 32px 32px 48px;
-    position: relative;
+  /* VENN CANVAS */
+  .venn-area { padding: 40px 32px 32px 48px; position: relative; }
+  .venn-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; }
+  #particle-canvas {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 10;
   }
+  svg#venn { width: 100%; height: auto; overflow: visible; }
 
-  .venn-container {
-    position: relative;
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  svg#venn {
-    width: 100%;
-    height: auto;
-    overflow: visible;
-  }
-
-  /* Circle fills */
-  .c-copilot { fill: var(--blue); opacity: 0.08; }
-  .c-autonomous { fill: var(--teal); opacity: 0.08; }
-  .c-enterprise { fill: var(--purple); opacity: 0.08; }
-
-  /* Circle strokes */
-  .ring-copilot { fill: none; stroke: var(--blue); stroke-width: 1.5; opacity: 0.5; }
-  .ring-autonomous { fill: none; stroke: var(--teal); stroke-width: 1.5; opacity: 0.5; }
-  .ring-enterprise { fill: none; stroke: var(--purple); stroke-width: 1.5; opacity: 0.5; }
-
-  /* Devin glow */
-  .devin-glow {
-    fill: radial-gradient(circle, var(--devin-gold), transparent);
-    filter: url(#glow);
-  }
-
-  /* Labels */
-  .circle-label {
-    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
-    text-transform: uppercase;
-  }
+  .circle-fill-anim { animation: fadeIn 0.8s ease-out both; }
+  .circle-ring-anim { animation: fadeIn 0.8s ease-out both; }
+  .ring-copilot { fill: none; stroke: var(--blue); stroke-width: 1.5; opacity: 0.55; }
+  .ring-autonomous { fill: none; stroke: var(--teal); stroke-width: 1.5; opacity: 0.55; }
+  .ring-enterprise { fill: none; stroke: var(--purple); stroke-width: 1.5; opacity: 0.55; }
+  .circle-label { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
   .lbl-copilot { fill: var(--blue); }
   .lbl-autonomous { fill: var(--teal); }
   .lbl-enterprise { fill: var(--purple); }
 
   /* Product nodes */
-  .product-node {
-    cursor: pointer;
-    transition: all 0.2s;
+  .product-node { cursor: pointer; outline: none; }
+  .product-node .node-circle { transition: filter 0.3s, transform 0.3s; }
+  .product-node:hover .node-circle,
+  .product-node:focus .node-circle {
+    filter: brightness(1.5) drop-shadow(0 0 12px currentColor); transform: scale(1.12);
   }
-  .product-node:hover .node-circle { filter: brightness(1.4); }
-  .product-node:hover .node-label { opacity: 1 !important; }
-
-  .node-circle {
-    transition: filter 0.2s, r 0.2s;
+  .product-node:hover .node-label,
+  .product-node:focus .node-label { opacity: 1 !important; }
+  .product-node.selected .node-circle {
+    filter: brightness(1.4) drop-shadow(0 0 14px currentColor); transform: scale(1.15);
   }
-
+  .product-node.selected .node-label { opacity: 1 !important; }
+  .node-anim { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
   .node-label {
-    font-size: 10px; font-weight: 600;
-    dominant-baseline: central;
-    text-anchor: middle;
-    pointer-events: none;
-    fill: white;
-    opacity: 0.85;
-    letter-spacing: 0.2px;
+    font-size: 10px; font-weight: 600; dominant-baseline: central; text-anchor: middle;
+    pointer-events: none; fill: white; opacity: 0.85; letter-spacing: 0.2px; transition: opacity 0.2s;
   }
 
   /* Devin star */
-  .devin-node .node-circle {
-    fill: var(--devin-gold);
-    filter: drop-shadow(0 0 8px rgba(255,209,102,0.7));
-  }
-  .devin-node .node-label {
-    font-size: 11px; font-weight: 800; fill: #0a0d14; opacity: 1;
-  }
+  .devin-node { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both, devinPulse 3s 1.2s ease-in-out infinite; transform-origin: center; }
+  .devin-node .node-circle { fill: var(--devin-gold); }
+  .devin-node .node-label { font-size: 11px; font-weight: 800; fill: #0a0d14; opacity: 1; }
+  .devin-ring-rotate { animation: devinRingRotate 20s linear infinite; transform-origin: center; }
+  .devin-glow-breathe { animation: breathe 4s ease-in-out infinite; }
+  .hover-glow-ring { fill: none; stroke-width: 2; opacity: 0; pointer-events: none; }
 
-  /* ── SIDEBAR ── */
+  /* SIDEBAR */
   .sidebar {
-    border-left: 1px solid var(--border);
-    padding: 32px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    overflow-y: auto;
+    border-left: 1px solid var(--border-glass); padding: 32px 28px;
+    display: flex; flex-direction: column; gap: 0; overflow-y: auto;
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   }
-
   .sidebar-title {
     font-size: 11px; font-weight: 700; letter-spacing: 1px;
-    text-transform: uppercase; color: var(--text-dim);
-    margin-bottom: 16px;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px;
   }
 
   /* Detail card */
   #detail-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-    min-height: 180px;
-    transition: border-color 0.3s;
+    background: var(--surface2-glass);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-glass); border-radius: 14px;
+    padding: 22px; margin-bottom: 24px; min-height: 180px;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    position: relative; overflow: hidden;
   }
-  #detail-card.active { border-color: var(--teal); }
-  #detail-card .dc-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  #detail-card::before {
+    content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+    background: var(--text-faint); border-radius: 3px 0 0 3px; transition: background 0.4s ease;
   }
-  #detail-card .dc-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    flex-shrink: 0;
+  #detail-card.active::before { background: var(--active-color, var(--teal)); }
+  #detail-card.active {
+    border-color: var(--active-color, var(--teal));
+    box-shadow: 0 0 30px rgba(0,201,177,0.08), 0 8px 32px rgba(0,0,0,0.3);
   }
-  #detail-card .dc-name {
-    font-size: 15px; font-weight: 700; color: var(--text);
-  }
-  #detail-card .dc-tagline {
-    font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px;
-  }
-  #detail-card .dc-tags {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
-  }
+  .dc-content { animation: fadeIn 0.35s ease-out; }
+  #detail-card .dc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  #detail-card .dc-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  #detail-card .dc-name { font-size: 16px; font-weight: 700; color: var(--text); }
+  #detail-card .dc-tagline { font-size: 12px; color: var(--text-dim); line-height: 1.6; margin-bottom: 14px; font-weight: 300; }
+  #detail-card .dc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   #detail-card .dc-tag {
-    font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 12px;
+    font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 12px;
     text-transform: uppercase; letter-spacing: 0.4px;
   }
   #detail-card .dc-tag.blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(79,142,247,0.3); }
@@ -198,142 +244,214 @@
   #detail-card .dc-tag.purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(155,123,255,0.3); }
   #detail-card .dc-tag.gold { background: rgba(255,209,102,0.12); color: var(--devin-gold); border: 1px solid rgba(255,209,102,0.35); }
   #detail-card .dc-note {
-    font-size: 12px; color: var(--text-dim); line-height: 1.6;
-    border-top: 1px solid var(--border); padding-top: 12px;
+    font-size: 12px; color: var(--text-dim); line-height: 1.65;
+    border-top: 1px solid var(--border); padding-top: 12px; font-weight: 300;
   }
+
+  .dc-close {
+    position: absolute; top: 10px; right: 12px;
+    background: none; border: none; color: var(--text-faint);
+    cursor: pointer; font-size: 16px; line-height: 1; transition: color 0.2s; padding: 4px; display: none;
+  }
+  .dc-close:hover { color: var(--text); }
+  #detail-card.locked .dc-close { display: block; }
 
   /* Devin uniqueness panel */
   .devin-panel {
     background: linear-gradient(135deg, rgba(255,209,102,0.06) 0%, rgba(0,201,177,0.06) 100%);
-    border: 1px solid rgba(255,209,102,0.25);
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
+    border: 1px solid rgba(255,209,102,0.2); border-radius: 14px;
+    padding: 20px 22px; margin-bottom: 20px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   }
   .devin-panel-title {
     font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-    color: var(--devin-gold); margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
+    color: var(--devin-gold); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
   }
-  .devin-panel-title::before {
-    content: '★'; font-size: 13px;
-  }
+  .devin-panel-title::before { content: '\2605'; font-size: 14px; }
   .devin-differentiator {
-    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
+    padding: 8px; border-radius: 8px; transition: background 0.2s;
   }
+  .devin-differentiator:hover { background: rgba(255,209,102,0.04); }
   .devin-differentiator:last-child { margin-bottom: 0; }
-  .devin-differentiator .icon {
-    font-size: 14px; flex-shrink: 0; margin-top: 1px;
-  }
-  .devin-differentiator .dd-content h4 {
-    font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px;
-  }
-  .devin-differentiator .dd-content p {
-    font-size: 11px; color: var(--text-dim); line-height: 1.5;
-  }
+  .devin-differentiator .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .devin-differentiator .dd-content h4 { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .devin-differentiator .dd-content p { font-size: 11px; color: var(--text-dim); line-height: 1.55; font-weight: 300; }
 
   /* Legend */
-  .legend {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-  .legend-title {
-    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--text-faint); margin-bottom: 12px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-  }
+  .legend { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
+  .legend-title { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .legend-text { font-size: 11px; color: var(--text-dim); }
-  .legend-line {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-  }
-  .legend-ring {
-    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
-    border: 2px solid; background: transparent;
-  }
+  .legend-text { font-size: 11px; color: var(--text-dim); font-weight: 300; }
 
   /* Hover prompt */
   #hover-prompt {
-    text-align: center; padding: 28px 0;
-    color: var(--text-faint); font-size: 12px;
+    text-align: center; padding: 28px 0; color: var(--text-faint); font-size: 12px;
     display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
   #hover-prompt svg { opacity: 0.4; }
 
-  /* ── BOTTOM MATRIX ── */
-  .matrix-section {
-    border-top: 1px solid var(--border);
-    padding: 32px 48px;
-    grid-column: 1 / -1;
+  /* WHY DEVIN WINS BANNER */
+  .devin-banner {
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 28px 48px;
+    background: linear-gradient(135deg, rgba(255,209,102,0.04) 0%, rgba(0,201,177,0.04) 50%, rgba(155,123,255,0.04) 100%);
+    text-align: center; position: relative; overflow: hidden;
   }
-  .matrix-title {
-    font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 20px;
-    letter-spacing: -0.2px;
+  .devin-banner::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--devin-gold), transparent); opacity: 0.4;
   }
-  .matrix-title span { color: var(--text-dim); font-weight: 400; margin-left: 8px; font-size: 13px; }
+  .devin-banner::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--devin-gold), transparent); opacity: 0.4;
+  }
+  .devin-banner .banner-star { color: var(--devin-gold); font-size: 20px; margin-bottom: 10px; display: block; }
+  .devin-banner blockquote {
+    font-size: 16px; font-weight: 500; color: var(--text);
+    max-width: 800px; margin: 0 auto; line-height: 1.6; letter-spacing: -0.2px;
+  }
+  .devin-banner blockquote em { color: var(--devin-gold); font-style: normal; font-weight: 700; }
+  .devin-banner .banner-sub { font-size: 12px; color: var(--text-dim); margin-top: 10px; font-weight: 300; }
 
-  .matrix-table {
-    width: 100%; border-collapse: collapse; font-size: 12px;
-  }
+  /* MATRIX */
+  .matrix-section { border-top: 1px solid var(--border); padding: 32px 48px 40px; }
+  .matrix-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; letter-spacing: -0.3px; }
+  .matrix-title span { color: var(--text-dim); font-weight: 400; margin-left: 8px; font-size: 13px; }
+  .matrix-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 800px; }
+  .matrix-table thead { position: sticky; top: 0; z-index: 2; }
   .matrix-table th {
     font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
-    color: var(--text-dim); padding: 8px 12px; text-align: left;
-    border-bottom: 1px solid var(--border);
+    color: var(--text-dim); padding: 10px 12px; text-align: left;
+    border-bottom: 1px solid var(--border); background: var(--bg); transition: background 0.2s;
   }
+  .matrix-table th.col-highlight { background: rgba(255,255,255,0.03); color: var(--text); }
   .matrix-table td {
-    padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04);
-    color: var(--text-dim); vertical-align: middle;
+    padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-dim); vertical-align: middle; transition: background 0.2s;
   }
-  .matrix-table tr:hover td { background: rgba(255,255,255,0.02); }
-  .matrix-table td:first-child { font-weight: 600; color: var(--text); }
+  .matrix-table td.col-highlight { background: rgba(255,255,255,0.02); }
+  .matrix-table tr { cursor: pointer; transition: background 0.2s; }
+  .matrix-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+  .matrix-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+
   .matrix-table tr.devin-row td { background: rgba(255,209,102,0.04); }
-  .matrix-table tr.devin-row td:first-child { color: var(--devin-gold); }
+  .matrix-table tr.devin-row:hover td { background: rgba(255,209,102,0.07); }
+  .matrix-table tr.devin-row td:first-child { color: var(--devin-gold); position: relative; }
+  .matrix-table tr.devin-row td:first-child::before {
+    content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
+    width: 3px; background: var(--devin-gold); border-radius: 2px;
+  }
+  .matrix-table tr.selected td { background: rgba(255,255,255,0.04); }
 
-  .check { color: var(--teal); font-size: 14px; }
-  .partial { color: var(--amber); font-size: 13px; }
-  .cross { color: var(--text-faint); font-size: 13px; }
+  .cap-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 11px; font-weight: 700; line-height: 1; vertical-align: middle;
+  }
+  .cap-full { background: rgba(0,201,177,0.15); color: var(--teal); }
+  .cap-partial { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .cap-none { background: rgba(74,85,104,0.15); color: var(--text-faint); }
+  .cap-detail { font-size: 10px; color: var(--text-faint); margin-left: 4px; font-weight: 400; }
 
-  /* tooltip */
+  .matrix-table tbody tr { opacity: 0; transform: translateX(-20px); }
+  .matrix-table tbody tr.row-visible { animation: slideInRow 0.4s ease-out both; }
+  .matrix-legend { margin-top: 16px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .matrix-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-dim); }
+  .matrix-source { font-size: 11px; color: var(--text-faint); margin-left: auto; }
+
+  /* Tooltip */
   #tooltip {
-    position: fixed;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--text-dim);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s;
-    max-width: 220px;
-    z-index: 1000;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    position: fixed; background: var(--surface2-glass);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass); border-radius: 10px; padding: 12px 16px;
+    font-size: 12px; color: var(--text-dim); pointer-events: none; opacity: 0;
+    transition: opacity 0.2s; max-width: 240px; z-index: 1000;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
   }
   #tooltip.visible { opacity: 1; }
-  #tooltip strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 4px; }
+  #tooltip strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 4px; font-weight: 600; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border); padding: 24px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .footer-brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-dim); }
+  .footer-brand .cognition-mark {
+    width: 20px; height: 20px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--devin-gold), var(--teal));
+  }
+  .footer-right { font-size: 11px; color: var(--text-faint); display: flex; align-items: center; gap: 16px; }
+
+  .confetti-piece { position: fixed; z-index: 9999; pointer-events: none; animation: confettiFall 2s ease-out forwards; }
+
+  .zone-key { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; padding-left: 24px; }
+  .zone-key-item { display: flex; align-items: center; gap: 8px; }
+  .zone-key-dot { width: 12px; height: 12px; border-radius: 3px; opacity: 0.8; }
+  .zone-key-text { font-size: 11px; color: var(--text-dim); font-weight: 300; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { border-left: none; border-top: 1px solid var(--border); }
+    .venn-area { padding: 32px 24px; }
+    .header { padding: 24px 24px 20px; }
+    .matrix-section { padding: 24px; }
+    .devin-banner { padding: 24px; }
+    .footer { padding: 20px 24px; }
+  }
+  @media (max-width: 680px) {
+    .header { padding: 20px 16px 16px; flex-direction: column; gap: 12px; }
+    .header-left h1 { font-size: 22px; }
+    .header-left p { font-size: 13px; }
+    .venn-area { padding: 20px 8px; }
+    .venn-container { max-width: 100%; }
+    .zone-key { flex-direction: column; gap: 8px; padding-left: 12px; }
+    .sidebar { padding: 20px 16px; }
+    .matrix-section { padding: 20px 16px; }
+    .devin-banner { padding: 20px 16px; }
+    .devin-banner blockquote { font-size: 14px; }
+    .matrix-legend { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .matrix-source { margin-left: 0; }
+    .footer { padding: 16px; flex-direction: column; text-align: center; }
+    .footer-right { flex-wrap: wrap; justify-content: center; }
+  }
+  @media (max-width: 400px) {
+    .header-left h1 { font-size: 19px; }
+    .node-label { font-size: 8px; }
+    .circle-label { font-size: 10px; }
+  }
+
+  .product-node:focus-visible .node-circle {
+    filter: brightness(1.5) drop-shadow(0 0 14px currentColor); transform: scale(1.12);
+  }
+  *:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  *:focus:not(:focus-visible) { outline: none; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<div class="accent-bar" aria-hidden="true"></div>
+
 <div class="header">
-  <div class="header-left">
+  <div class="header-left anim-fade-in-down">
     <h1>Agentic Coding Platform Landscape</h1>
-    <p>Understanding where Devin (Cognition) fits — and why it stands apart from every other platform in the market. Hover over any product to explore its positioning. Click to see details.</p>
+    <p>Understanding where Devin (Cognition) fits &mdash; and why it stands apart from every other platform in the market. Hover or click any product to explore its positioning.</p>
   </div>
-  <div class="badge">Confidential · March 2026</div>
+  <div class="badge anim-fade-in-down delay-2">Confidential &middot; March 2026</div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- VENN -->
   <div class="venn-area">
     <div class="venn-container">
-      <svg id="venn" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+      <canvas id="particle-canvas" aria-hidden="true"></canvas>
+      <svg id="venn" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venn diagram showing competitive positioning of agentic coding platforms">
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="8" result="blur"/>
@@ -344,441 +462,419 @@
             <feComposite in="SourceGraphic" in2="blur" operator="over"/>
           </filter>
           <radialGradient id="devin-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffd166" stop-opacity="0.35"/>
+            <stop offset="0%" stop-color="#ffd166" stop-opacity="0.45"/>
             <stop offset="100%" stop-color="#ffd166" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="grad-copilot" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#4f8ef7" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#4f8ef7" stop-opacity="0.05"/>
+          </radialGradient>
+          <radialGradient id="grad-autonomous" cx="50%" cy="60%" r="60%">
+            <stop offset="0%" stop-color="#00c9b1" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#00c9b1" stop-opacity="0.05"/>
+          </radialGradient>
+          <radialGradient id="grad-enterprise" cx="60%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#9b7bff" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#9b7bff" stop-opacity="0.05"/>
           </radialGradient>
         </defs>
 
-        <!-- ── Circle fills ── -->
-        <!-- AI Copilot (top-left, blue) -->
-        <circle cx="240" cy="210" r="185" class="c-copilot"/>
-        <!-- Autonomous Agent (bottom-center, teal) -->
-        <circle cx="390" cy="340" r="185" class="c-autonomous"/>
-        <!-- Enterprise Ready (top-right, purple) -->
-        <circle cx="490" cy="185" r="185" class="c-enterprise"/>
+        <circle cx="240" cy="210" r="185" fill="url(#grad-copilot)" class="circle-fill-anim delay-1"/>
+        <circle cx="390" cy="340" r="185" fill="url(#grad-autonomous)" class="circle-fill-anim delay-2"/>
+        <circle cx="490" cy="185" r="185" fill="url(#grad-enterprise)" class="circle-fill-anim delay-3"/>
+        <circle cx="240" cy="210" r="185" class="ring-copilot circle-ring-anim delay-1"/>
+        <circle cx="390" cy="340" r="185" class="ring-autonomous circle-ring-anim delay-2"/>
+        <circle cx="490" cy="185" r="185" class="ring-enterprise circle-ring-anim delay-3"/>
 
-        <!-- ── Circle rings ── -->
-        <circle cx="240" cy="210" r="185" class="ring-copilot"/>
-        <circle cx="390" cy="340" r="185" class="ring-autonomous"/>
-        <circle cx="490" cy="185" r="185" class="ring-enterprise"/>
+        <text x="100" y="90" class="circle-label lbl-copilot anim-fade-in delay-2">AI Copilot</text>
+        <text x="100" y="107" class="circle-label lbl-copilot anim-fade-in delay-2" font-size="10" font-weight="400" fill="#4f8ef7" opacity="0.7">In-IDE / Dev-led</text>
+        <text x="265" y="500" class="circle-label lbl-autonomous anim-fade-in delay-3">Autonomous</text>
+        <text x="275" y="517" class="circle-label lbl-autonomous anim-fade-in delay-3" font-size="10" font-weight="400" fill="#00c9b1" opacity="0.7">Agent / Async</text>
+        <text x="545" y="72" class="circle-label lbl-enterprise anim-fade-in delay-4">Enterprise</text>
+        <text x="548" y="89" class="circle-label lbl-enterprise anim-fade-in delay-4" font-size="10" font-weight="400" fill="#9b7bff" opacity="0.7">Governance</text>
 
-        <!-- ── Circle labels ── -->
-        <text x="100" y="90" class="circle-label lbl-copilot">AI Copilot</text>
-        <text x="100" y="107" class="circle-label lbl-copilot" font-size="10" font-weight="400" fill="#4f8ef7" opacity="0.7">In-IDE / Dev-led</text>
+        <circle cx="392" cy="258" r="80" fill="url(#devin-grad)" class="devin-glow-breathe"/>
 
-        <text x="265" y="500" class="circle-label lbl-autonomous">Autonomous</text>
-        <text x="275" y="517" class="circle-label lbl-autonomous" font-size="10" font-weight="400" fill="#00c9b1" opacity="0.7">Agent / Async</text>
+        <line x1="370" y1="240" x2="200" y2="135" stroke="#ffd166" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.2" class="anim-fade-in delay-6"/>
+        <line x1="392" y1="275" x2="330" y2="480" stroke="#ffd166" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.2" class="anim-fade-in delay-7"/>
+        <line x1="415" y1="240" x2="580" y2="100" stroke="#ffd166" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.2" class="anim-fade-in delay-8"/>
 
-        <text x="545" y="72" class="circle-label lbl-enterprise">Enterprise</text>
-        <text x="548" y="89" class="circle-label lbl-enterprise" font-size="10" font-weight="400" fill="#9b7bff" opacity="0.7">Governance</text>
-
-        <!-- ── Devin glow zone ── -->
-        <circle cx="392" cy="258" r="72" fill="url(#devin-grad)"/>
-
-        <!-- ══ PRODUCT NODES ══ -->
-
-        <!-- Cursor — AI Copilot zone, not enterprise, some autonomy -->
-        <g class="product-node" data-product="cursor" transform="translate(120, 175)">
+        <g class="product-node node-anim delay-3" data-product="cursor" transform="translate(120, 175)" tabindex="0" role="button" aria-label="Cursor">
+          <circle class="hover-glow-ring" r="30" stroke="#4f8ef7"/>
           <circle class="node-circle" r="30" fill="#4f8ef7" opacity="0.75"/>
           <text class="node-label" y="0">Cursor</text>
         </g>
-
-        <!-- Windsurf — AI Copilot zone -->
-        <g class="product-node" data-product="windsurf" transform="translate(168, 268)">
+        <g class="product-node node-anim delay-4" data-product="windsurf" transform="translate(168, 268)" tabindex="0" role="button" aria-label="Windsurf">
+          <circle class="hover-glow-ring" r="26" stroke="#5599ff"/>
           <circle class="node-circle" r="26" fill="#5599ff" opacity="0.7"/>
           <text class="node-label" y="0">Windsurf</text>
         </g>
-
-        <!-- GitHub Copilot standard — Copilot + Enterprise -->
-        <g class="product-node" data-product="github-copilot" transform="translate(355, 128)">
+        <g class="product-node node-anim delay-4" data-product="github-copilot" transform="translate(355, 128)" tabindex="0" role="button" aria-label="GitHub Copilot">
+          <circle class="hover-glow-ring" r="28" stroke="#7a6fff"/>
           <circle class="node-circle" r="28" fill="#7a6fff" opacity="0.8"/>
           <text class="node-label" y="-6">GitHub</text>
           <text class="node-label" y="8">Copilot</text>
         </g>
-
-        <!-- Replit — Copilot + some Autonomy, not enterprise -->
-        <g class="product-node" data-product="replit" transform="translate(226, 340)">
+        <g class="product-node node-anim delay-5" data-product="replit" transform="translate(226, 340)" tabindex="0" role="button" aria-label="Replit">
+          <circle class="hover-glow-ring" r="24" stroke="#3d9be9"/>
           <circle class="node-circle" r="24" fill="#3d9be9" opacity="0.75"/>
           <text class="node-label" y="0">Replit</text>
         </g>
-
-        <!-- GH Copilot Workspace — all three, center-ish -->
-        <g class="product-node" data-product="copilot-workspace" transform="translate(368, 192)">
+        <g class="product-node node-anim delay-5" data-product="copilot-workspace" transform="translate(368, 192)" tabindex="0" role="button" aria-label="Copilot Workspace">
+          <circle class="hover-glow-ring" r="30" stroke="#8b6cff"/>
           <circle class="node-circle" r="30" fill="#8b6cff" opacity="0.8"/>
           <text class="node-label" y="-6">Copilot</text>
           <text class="node-label" y="7">Workspace</text>
         </g>
-
-        <!-- Amazon Q — Autonomous + Enterprise, AWS-locked -->
-        <g class="product-node" data-product="amazon-q" transform="translate(498, 290)">
+        <g class="product-node node-anim delay-6" data-product="amazon-q" transform="translate(498, 290)" tabindex="0" role="button" aria-label="Amazon Q Developer">
+          <circle class="hover-glow-ring" r="28" stroke="#9b7bff"/>
           <circle class="node-circle" r="28" fill="#9b7bff" opacity="0.8"/>
           <text class="node-label" y="-5">Amazon</text>
           <text class="node-label" y="7">Q Dev</text>
         </g>
-
-        <!-- OpenAI Codex — Autonomous zone, growing enterprise -->
-        <g class="product-node" data-product="openai-codex" transform="translate(428, 390)">
+        <g class="product-node node-anim delay-6" data-product="openai-codex" transform="translate(428, 390)" tabindex="0" role="button" aria-label="OpenAI Codex">
+          <circle class="hover-glow-ring" r="30" stroke="#00b89e"/>
           <circle class="node-circle" r="30" fill="#00b89e" opacity="0.8"/>
           <text class="node-label" y="-5">OpenAI</text>
           <text class="node-label" y="7">Codex</text>
         </g>
-
-        <!-- Devin (Cognition) — Center, all three + unique -->
-        <g class="product-node devin-node" data-product="devin" transform="translate(392, 255)">
+        <g class="product-node devin-node node-anim delay-7" data-product="devin" transform="translate(392, 255)" tabindex="0" role="button" aria-label="Devin by Cognition Labs">
+          <circle class="hover-glow-ring" r="38" stroke="#ffd166"/>
+          <circle class="devin-ring-rotate" r="46" fill="none" stroke="#ffd166" stroke-width="1" stroke-dasharray="4 3" opacity="0.45"/>
           <circle class="node-circle" r="38" opacity="1"/>
-          <!-- star ring -->
-          <circle r="44" fill="none" stroke="#ffd166" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
           <text class="node-label" y="-6" font-size="12">Devin</text>
           <text class="node-label" y="7" font-size="9" opacity="0.85">(Cognition)</text>
         </g>
 
-        <!-- Zone annotation lines -->
-        <line x1="392" y1="211" x2="392" y2="170" stroke="#ffd166" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
-        <text x="392" y="162" fill="#ffd166" font-size="10" font-weight="600" text-anchor="middle" opacity="0.8">★ Unique Zone</text>
-
+        <line x1="392" y1="209" x2="392" y2="168" stroke="#ffd166" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" class="anim-fade-in delay-8"/>
+        <text x="392" y="160" fill="#ffd166" font-size="10" font-weight="600" text-anchor="middle" opacity="0.8" class="anim-fade-in delay-8">Unique Zone</text>
       </svg>
     </div>
-
-    <!-- Zone key -->
-    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:8px; padding-left: 24px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:12px;height:12px;border-radius:3px;background:var(--blue);opacity:0.8;"></div>
-        <span style="font-size:11px;color:var(--text-dim);">AI Copilot — in-IDE, developer-led assistance</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:12px;height:12px;border-radius:3px;background:var(--teal);opacity:0.8;"></div>
-        <span style="font-size:11px;color:var(--text-dim);">Autonomous Agent — async, multi-step, independent execution</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="width:12px;height:12px;border-radius:3px;background:var(--purple);opacity:0.8;"></div>
-        <span style="font-size:11px;color:var(--text-dim);">Enterprise Ready — governance, compliance, audit controls</span>
-      </div>
+    <div class="zone-key anim-fade-in delay-6">
+      <div class="zone-key-item"><div class="zone-key-dot" style="background:var(--blue);"></div><span class="zone-key-text">AI Copilot &mdash; in-IDE, developer-led assistance</span></div>
+      <div class="zone-key-item"><div class="zone-key-dot" style="background:var(--teal);"></div><span class="zone-key-text">Autonomous Agent &mdash; async, multi-step execution</span></div>
+      <div class="zone-key-item"><div class="zone-key-dot" style="background:var(--purple);"></div><span class="zone-key-text">Enterprise Ready &mdash; governance, compliance, audit</span></div>
     </div>
   </div>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar anim-fade-in delay-3">
     <div class="sidebar-title">Product Detail</div>
-
     <div id="detail-card">
+      <button class="dc-close" aria-label="Close detail card" title="Close">&times;</button>
       <div id="hover-prompt">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-        </svg>
-        <span>Hover over any product<br/>on the diagram to explore</span>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+        <span>Hover or click any product<br/>on the diagram to explore</span>
       </div>
     </div>
 
-    <div class="devin-panel">
+    <div class="devin-panel anim-fade-in delay-5">
       <div class="devin-panel-title">What Makes Devin Unique</div>
-
       <div class="devin-differentiator">
-        <span class="icon">🖥️</span>
-        <div class="dd-content">
-          <h4>Persistent VM Workspace</h4>
-          <p>Devin maintains state across the full session — memory, files, browser, terminal — unlike stateless code-gen tools.</p>
-        </div>
+        <span class="icon" aria-hidden="true">&#x1F5A5;&#xFE0F;</span>
+        <div class="dd-content"><h4>Persistent VM Workspace</h4><p>Devin maintains state across the full session &mdash; memory, files, browser, terminal &mdash; unlike stateless code-gen tools.</p></div>
       </div>
-
       <div class="devin-differentiator">
-        <span class="icon">⏱️</span>
-        <div class="dd-content">
-          <h4>Long-Horizon Autonomy</h4>
-          <p>Works independently for 7+ hours on complex tasks. Not a copilot — a software engineer that takes tickets end-to-end.</p>
-        </div>
+        <span class="icon" aria-hidden="true">&#x23F1;&#xFE0F;</span>
+        <div class="dd-content"><h4>Long-Horizon Autonomy</h4><p>Works independently for 7+ hours on complex tasks. Not a copilot &mdash; a software engineer that takes tickets end-to-end.</p></div>
       </div>
-
       <div class="devin-differentiator">
-        <span class="icon">🏛️</span>
-        <div class="dd-content">
-          <h4>Enterprise Governance</h4>
-          <p>ACU budgets, audit trails, SSO, and compliance-ready deployment. Purpose-built for regulated industries.</p>
-        </div>
+        <span class="icon" aria-hidden="true">&#x1F3DB;&#xFE0F;</span>
+        <div class="dd-content"><h4>Enterprise Governance</h4><p>ACU budgets, audit trails, SSO, and compliance-ready deployment. Purpose-built for regulated industries.</p></div>
       </div>
-
       <div class="devin-differentiator">
-        <span class="icon">🤝</span>
-        <div class="dd-content">
-          <h4>SI-Embedded Distribution</h4>
-          <p>Infosys & Cognizant deploy Devin inside enterprise banking engagements — a channel no competitor has replicated.</p>
-        </div>
+        <span class="icon" aria-hidden="true">&#x1F91D;</span>
+        <div class="dd-content"><h4>SI-Embedded Distribution</h4><p>Infosys &amp; Cognizant deploy Devin inside enterprise banking engagements &mdash; a channel no competitor has replicated.</p></div>
       </div>
-
       <div class="devin-differentiator">
-        <span class="icon">⚙️</span>
-        <div class="dd-content">
-          <h4>Legacy Modernization Depth</h4>
-          <p>Proven COBOL-to-modern migration. Infosys: "complex migrations shifted from long resource-heavy undertakings to streamlined processes."</p>
-        </div>
+        <span class="icon" aria-hidden="true">&#x2699;&#xFE0F;</span>
+        <div class="dd-content"><h4>Legacy Modernization Depth</h4><p>Proven COBOL-to-modern migration. Infosys: &ldquo;complex migrations shifted from long resource-heavy undertakings to streamlined processes.&rdquo;</p></div>
       </div>
     </div>
 
-    <div class="legend">
-      <div class="legend-title">Hover Guide</div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:var(--devin-gold);box-shadow:0 0 6px rgba(255,209,102,0.6);"></div>
-        <span class="legend-text">Devin — sits at all three intersections</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:var(--blue);opacity:0.8;"></div>
-        <span class="legend-text">Copilot-first tools</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:var(--teal);opacity:0.8;"></div>
-        <span class="legend-text">Autonomous-first tools</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:var(--purple);opacity:0.8;"></div>
-        <span class="legend-text">Enterprise-integrated tools</span>
-      </div>
+    <div class="legend anim-fade-in delay-6">
+      <div class="legend-title">Guide</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--devin-gold);box-shadow:0 0 6px rgba(255,209,102,0.6);"></div><span class="legend-text">Devin &mdash; sits at all three intersections</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue);opacity:0.8;"></div><span class="legend-text">Copilot-first tools</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--teal);opacity:0.8;"></div><span class="legend-text">Autonomous-first tools</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple);opacity:0.8;"></div><span class="legend-text">Enterprise-integrated tools</span></div>
     </div>
   </div>
-
 </div>
 
-<!-- MATRIX TABLE -->
-<div class="matrix-section" style="grid-column: 1 / -1;">
-  <div class="matrix-title">Capability Comparison Matrix <span>Click any row to highlight</span></div>
-  <table class="matrix-table">
-    <thead>
-      <tr>
-        <th style="width:160px;">Platform</th>
-        <th>In-IDE Assist</th>
-        <th>Autonomous Agent</th>
-        <th>Long-Horizon Tasks</th>
-        <th>Persistent Workspace</th>
-        <th>Enterprise Governance</th>
-        <th>SI Channel</th>
-        <th>Legacy Modernisation</th>
-        <th>Async / Background</th>
-        <th>Multi-agent Parallel</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="devin-row">
-        <td>★ Devin (Cognition)</td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">7h+</small></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">ACU + audit</small></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">Infosys, Cognizant</small></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">COBOL proven</small></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-      </tr>
-      <tr>
-        <td>OpenAI Codex</td>
-        <td><span class="cross">○</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">growing</small></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">emerging</small></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-      </tr>
-      <tr>
-        <td>GitHub Copilot Workspace</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">MS ecosystem</small></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-      </tr>
-      <tr>
-        <td>Amazon Q Developer</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="check">✓</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="check">✓</span> <small style="color:var(--text-dim);">AWS-specific</small></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="partial">◑</span></td>
-      </tr>
-      <tr>
-        <td>Cursor</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">agent mode</small></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">8 agents</small></td>
-      </tr>
-      <tr>
-        <td>Windsurf (Codeium)</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">Cascade</small></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-      </tr>
-      <tr>
-        <td>Replit Agent</td>
-        <td><span class="check">✓</span></td>
-        <td><span class="partial">◑</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-        <td><span class="cross">○</span></td>
-      </tr>
-    </tbody>
-  </table>
-  <div style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:var(--text-dim);"><span class="check">✓</span> Full capability</span>
-    <span style="font-size:11px;color:var(--text-dim);"><span class="partial">◑</span> Partial / emerging</span>
-    <span style="font-size:11px;color:var(--text-dim);"><span class="cross">○</span> Not available</span>
-    <span style="font-size:11px;color:var(--text-faint);margin-left:auto;">Sources: Cognition Labs, OpenAI, GitHub, AWS, analyst research — March 2026</span>
+<div class="devin-banner scroll-reveal">
+  <span class="banner-star" aria-hidden="true">&#9733;</span>
+  <blockquote>The <em>only</em> platform that combines full autonomy, persistent workspace, enterprise governance, SI distribution, and legacy modernisation.</blockquote>
+  <div class="banner-sub">No other platform plays in all five dimensions simultaneously.</div>
+</div>
+
+<div class="matrix-section scroll-reveal">
+  <div class="matrix-title">Capability Comparison Matrix <span>Click any row to highlight on diagram</span></div>
+  <div class="matrix-scroll">
+    <table class="matrix-table" role="grid">
+      <thead><tr>
+        <th style="width:160px;">Platform</th><th>In-IDE Assist</th><th>Autonomous Agent</th><th>Long-Horizon Tasks</th><th>Persistent Workspace</th><th>Enterprise Governance</th><th>SI Channel</th><th>Legacy Modernisation</th><th>Async / Background</th><th>Multi-agent Parallel</th>
+      </tr></thead>
+      <tbody>
+        <tr class="devin-row" data-product="devin">
+          <td>&#9733; Devin (Cognition)</td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">7h+</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">ACU + audit</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">Infosys, Cognizant</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">COBOL proven</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+        </tr>
+        <tr data-product="openai-codex">
+          <td>OpenAI Codex</td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">growing</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span> <span class="cap-detail">emerging</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+        </tr>
+        <tr data-product="copilot-workspace">
+          <td>GitHub Copilot Workspace</td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">MS ecosystem</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+        </tr>
+        <tr data-product="amazon-q">
+          <td>Amazon Q Developer</td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span> <span class="cap-detail">AWS-specific</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+        </tr>
+        <tr data-product="cursor">
+          <td>Cursor</td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span> <span class="cap-detail">agent mode</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span> <span class="cap-detail">8 agents</span></td>
+        </tr>
+        <tr data-product="windsurf">
+          <td>Windsurf (Codeium)</td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span> <span class="cap-detail">Cascade</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+        </tr>
+        <tr data-product="replit">
+          <td>Replit Agent</td>
+          <td><span class="cap-icon cap-full" title="Full">&#x2713;</span></td>
+          <td><span class="cap-icon cap-partial" title="Partial">&#x25D1;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+          <td><span class="cap-icon cap-none" title="None">&#x25CB;</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="matrix-legend">
+    <div class="matrix-legend-item"><span class="cap-icon cap-full">&#x2713;</span> Full capability</div>
+    <div class="matrix-legend-item"><span class="cap-icon cap-partial">&#x25D1;</span> Partial / emerging</div>
+    <div class="matrix-legend-item"><span class="cap-icon cap-none">&#x25CB;</span> Not available</div>
+    <span class="matrix-source">Sources: Cognition Labs, OpenAI, GitHub, AWS, analyst research &mdash; March 2026</span>
   </div>
 </div>
 
-<!-- TOOLTIP -->
-<div id="tooltip"></div>
+<footer class="footer">
+  <div class="footer-brand"><div class="cognition-mark" aria-hidden="true"></div><span>Cognition Labs</span></div>
+  <div class="footer-right"><span>Prepared for ANZ Country Lead opportunity</span><span>&middot;</span><span>March 2026</span></div>
+</footer>
+
+<div id="tooltip" role="tooltip" aria-hidden="true"></div>
 
 <script>
-const products = {
+var products = {
   'cursor': {
-    name: 'Cursor',
-    color: '#4f8ef7',
+    name: 'Cursor', color: '#4f8ef7',
     tagline: 'An AI-native IDE forked from VS Code. Excellent inline code generation and multi-file editing. The default choice for individual developers and small teams.',
     tags: [{label:'AI Copilot', type:'blue'}, {label:'IDE-first', type:'blue'}],
     note: 'Agent mode added Feb 2026 allows up to 8 parallel worktrees, but still developer-in-the-loop. No enterprise governance or persistent workspace. Credit-based pricing can create cost surprises.'
   },
   'windsurf': {
-    name: 'Windsurf (Codeium)',
-    color: '#5599ff',
-    tagline: 'Codeium\'s AI-native editor with Cascade agent providing deep codebase understanding and multi-step task execution across sessions.',
+    name: 'Windsurf (Codeium)', color: '#5599ff',
+    tagline: "Codeium\u2019s AI-native editor with Cascade agent providing deep codebase understanding and multi-step task execution across sessions.",
     tags: [{label:'AI Copilot', type:'blue'}, {label:'Cascade Agent', type:'blue'}],
     note: 'Strong IDE experience with context-aware Cascade agent. Consumer/prosumer positioned. No enterprise governance controls, no async background operation, no SI channel.'
   },
   'github-copilot': {
-    name: 'GitHub Copilot',
-    color: '#7a6fff',
-    tagline: 'Microsoft\'s flagship AI coding assistant. Deeply integrated into the GitHub/VS Code ecosystem with per-seat enterprise licensing.',
+    name: 'GitHub Copilot', color: '#7a6fff',
+    tagline: "Microsoft\u2019s flagship AI coding assistant. Deeply integrated into the GitHub/VS Code ecosystem with per-seat enterprise licensing.",
     tags: [{label:'AI Copilot', type:'blue'}, {label:'Enterprise', type:'purple'}],
     note: 'Dominant in enterprise because of Microsoft procurement trust and GitHub integration. Copilot standard is in-IDE autocomplete, not autonomous. See Copilot Workspace for agentic features.'
   },
   'copilot-workspace': {
-    name: 'GitHub Copilot Workspace',
-    color: '#8b6cff',
-    tagline: 'GitHub\'s task-centric agentic layer. Takes a GitHub Issue and plans, writes code, runs tests, and opens PRs — scoring 55% on SWE-bench Verified.',
+    name: 'GitHub Copilot Workspace', color: '#8b6cff',
+    tagline: "GitHub\u2019s task-centric agentic layer. Takes a GitHub Issue and plans, writes code, runs tests, and opens PRs \u2014 scoring 55% on SWE-bench Verified.",
     tags: [{label:'AI Copilot', type:'blue'}, {label:'Agentic', type:'teal'}, {label:'Enterprise', type:'purple'}],
     note: 'Strong enterprise distribution via Microsoft. Crosses all three circles BUT is IDE-bound (requires GitHub issues as entry point), lacks persistent VM, and has limited async capability. Not industry-vertical aware.'
   },
   'amazon-q': {
-    name: 'Amazon Q Developer',
-    color: '#9b7bff',
-    tagline: 'AWS\'s enterprise coding agent. Deeply integrated with AWS services. Hit 66% on SWE-Bench in April 2025 — top of commercial leaderboards at the time.',
+    name: 'Amazon Q Developer', color: '#9b7bff',
+    tagline: "AWS\u2019s enterprise coding agent. Deeply integrated with AWS services. Hit 66% on SWE-Bench in April 2025 \u2014 top of commercial leaderboards at the time.",
     tags: [{label:'Agentic', type:'teal'}, {label:'Enterprise', type:'purple'}, {label:'AWS-locked', type:'purple'}],
-    note: 'Strong for AWS-centric enterprises. Excellent governance via AWS IAM and CloudTrail. However, value proposition is tied to AWS ecosystem — not cloud-agnostic. No SI channel or legacy mainframe positioning.'
+    note: "Strong for AWS-centric enterprises. Excellent governance via AWS IAM and CloudTrail. However, value proposition is tied to AWS ecosystem \u2014 not cloud-agnostic. No SI channel or legacy mainframe positioning."
   },
   'openai-codex': {
-    name: 'OpenAI Codex',
-    color: '#00b89e',
-    tagline: 'OpenAI\'s cloud-based coding agent powered by GPT-5.x-Codex. Capable of multi-hour autonomous tasks, parallel agents, and full software lifecycle support.',
+    name: 'OpenAI Codex', color: '#00b89e',
+    tagline: "OpenAI\u2019s cloud-based coding agent powered by GPT-5.x-Codex. Capable of multi-hour autonomous tasks, parallel agents, and full software lifecycle support.",
     tags: [{label:'Autonomous', type:'teal'}, {label:'Multi-agent', type:'teal'}],
-    note: 'The most significant new competitor. GPT-5.3-Codex works independently for 7h+ on complex tasks. Strong autonomy but enterprise governance is still emerging. No SI channel, no persistent VM (stateless cloud), no proven legacy modernisation track record. OpenAI\'s distribution advantage is real — but enterprise procurement is not yet locked in.'
+    note: "The most significant new competitor. GPT-5.3-Codex works independently for 7h+ on complex tasks. Strong autonomy but enterprise governance is still emerging. No SI channel, no persistent VM (stateless cloud), no proven legacy modernisation track record. OpenAI\u2019s distribution advantage is real \u2014 but enterprise procurement is not yet locked in."
+  },
+  'replit': {
+    name: 'Replit Agent', color: '#3d9be9',
+    tagline: "Replit\u2019s cloud-based coding agent that turns natural language prompts into running applications, with integrated hosting and deployment.",
+    tags: [{label:'AI Copilot', type:'blue'}, {label:'Cloud IDE', type:'blue'}],
+    note: 'Consumer/prosumer focused. Great for prototyping and small apps. No enterprise governance, limited autonomous capability, no SI channel, and not positioned for complex enterprise workflows.'
   },
   'devin': {
-    name: '★ Devin (Cognition Labs)',
-    color: '#ffd166',
-    tagline: 'The world\'s first fully autonomous AI software engineer. Grew from $1M ARR (Sep 2024) to $73M ARR (Jun 2025). Valued at $10.2B. The only platform purpose-built to be a software engineer, not a coding tool.',
+    name: '\u2605 Devin (Cognition Labs)', color: '#ffd166',
+    tagline: "The world\u2019s first fully autonomous AI software engineer. Grew from $1M ARR (Sep 2024) to $73M ARR (Jun 2025). Valued at $10.2B. The only platform purpose-built to be a software engineer, not a coding tool.",
     tags: [{label:'Fully Autonomous', type:'gold'}, {label:'Enterprise Gov.', type:'gold'}, {label:'Persistent VM', type:'gold'}, {label:'SI-Embedded', type:'gold'}],
-    note: '★ UNIQUE ZONE: Devin is the only platform that combines (1) true long-horizon autonomy, (2) persistent workspace with full dev environment state, (3) enterprise governance (ACU budgets, audit trails), (4) SI-embedded distribution via Infosys & Cognizant, and (5) proven COBOL/legacy modernisation. Codex has autonomy but lacks 3, 4, and 5. GitHub Workspace has governance but lacks 1, 2, and 4. Nobody else plays all five.'
+    note: '\u2605 UNIQUE ZONE: Devin is the only platform that combines (1) true long-horizon autonomy, (2) persistent workspace with full dev environment state, (3) enterprise governance (ACU budgets, audit trails), (4) SI-embedded distribution via Infosys & Cognizant, and (5) proven COBOL/legacy modernisation. Codex has autonomy but lacks 3, 4, and 5. GitHub Workspace has governance but lacks 1, 2, and 4. Nobody else plays all five.'
   }
 };
 
-const nodes = document.querySelectorAll('.product-node');
-const detailCard = document.getElementById('detail-card');
-const tooltip = document.getElementById('tooltip');
-let activeProduct = null;
+var nodes = document.querySelectorAll('.product-node');
+var detailCard = document.getElementById('detail-card');
+var tooltip = document.getElementById('tooltip');
+var closeBtn = detailCard.querySelector('.dc-close');
+var activeProduct = null, isLocked = false, devinClickCount = 0;
 
-function showDetail(productKey) {
-  const p = products[productKey];
-  if (!p) return;
-  activeProduct = productKey;
+function showDetail(pk, lock) {
+  var p = products[pk]; if (!p) return;
+  if (lock) { isLocked = true; detailCard.classList.add('locked'); }
+  activeProduct = pk;
   detailCard.classList.add('active');
-
-  const tagsHTML = p.tags.map(t => `<span class="dc-tag ${t.type}">${t.label}</span>`).join('');
-
-  detailCard.innerHTML = `
-    <div class="dc-header">
-      <div class="dc-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}55;"></div>
-      <div class="dc-name">${p.name}</div>
-    </div>
-    <div class="dc-tagline">${p.tagline}</div>
-    <div class="dc-tags">${tagsHTML}</div>
-    <div class="dc-note">${p.note}</div>
-  `;
+  detailCard.style.setProperty('--active-color', p.color);
+  var tags = p.tags.map(function(t){ return '<span class="dc-tag '+t.type+'">'+t.label+'</span>'; }).join('');
+  detailCard.innerHTML = '<button class="dc-close" aria-label="Close" title="Close">&times;</button><div class="dc-content"><div class="dc-header"><div class="dc-dot" style="background:'+p.color+';box-shadow:0 0 8px '+p.color+'55;"></div><div class="dc-name">'+p.name+'</div></div><div class="dc-tagline">'+p.tagline+'</div><div class="dc-tags">'+tags+'</div><div class="dc-note">'+p.note+'</div></div>';
+  detailCard.querySelector('.dc-close').addEventListener('click', unlockDetail);
+  nodes.forEach(function(n){ n.classList.toggle('selected', n.getAttribute('data-product')===pk); });
+  document.querySelectorAll('.matrix-table tbody tr').forEach(function(r){ r.classList.toggle('selected', r.getAttribute('data-product')===pk); });
 }
+
+function unlockDetail() { isLocked = false; detailCard.classList.remove('locked'); resetDetail(); }
 
 function resetDetail() {
+  if (isLocked) return;
   activeProduct = null;
   detailCard.classList.remove('active');
-  detailCard.innerHTML = `
-    <div id="hover-prompt">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-      </svg>
-      <span>Hover over any product<br/>on the diagram to explore</span>
-    </div>
-  `;
+  detailCard.style.removeProperty('--active-color');
+  detailCard.innerHTML = '<button class="dc-close" aria-label="Close" title="Close" style="display:none;">&times;</button><div id="hover-prompt"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg><span>Hover or click any product<br/>on the diagram to explore</span></div>';
+  nodes.forEach(function(n){ n.classList.remove('selected'); });
+  document.querySelectorAll('.matrix-table tbody tr').forEach(function(r){ r.classList.remove('selected'); });
 }
 
-nodes.forEach(node => {
-  const key = node.getAttribute('data-product');
-  const p = products[key];
-  if (!p) return;
-
-  node.addEventListener('mouseenter', (e) => {
-    tooltip.innerHTML = `<strong>${p.name}</strong>${p.tagline.substring(0, 80)}...`;
+nodes.forEach(function(node) {
+  var key = node.getAttribute('data-product');
+  var p = products[key]; if (!p) return;
+  node.addEventListener('mouseenter', function() {
+    tooltip.innerHTML = '<strong>'+p.name+'</strong>'+p.tagline.substring(0,90)+'...';
     tooltip.classList.add('visible');
-    showDetail(key);
+    if (!isLocked) showDetail(key, false);
   });
-
-  node.addEventListener('mousemove', (e) => {
-    tooltip.style.left = (e.clientX + 14) + 'px';
-    tooltip.style.top = (e.clientY - 10) + 'px';
+  node.addEventListener('mousemove', function(e) { tooltip.style.left=(e.clientX+14)+'px'; tooltip.style.top=(e.clientY-10)+'px'; });
+  node.addEventListener('mouseleave', function() { tooltip.classList.remove('visible'); if (!isLocked) resetDetail(); });
+  node.addEventListener('click', function() {
+    showDetail(key, true);
+    if (key==='devin') { devinClickCount++; if (devinClickCount>=5) { triggerConfetti(); devinClickCount=0; } } else { devinClickCount=0; }
   });
-
-  node.addEventListener('mouseleave', () => {
-    tooltip.classList.remove('visible');
-  });
-
-  node.addEventListener('click', () => {
-    showDetail(key);
+  node.addEventListener('keydown', function(e) {
+    if (e.key==='Enter'||e.key===' ') { e.preventDefault(); showDetail(key, true); }
+    if (e.key==='Escape') unlockDetail();
   });
 });
 
-// Matrix row clicks
-document.querySelectorAll('.matrix-table tbody tr').forEach(row => {
-  row.style.cursor = 'pointer';
-  row.addEventListener('click', () => {
-    const name = row.querySelector('td:first-child').textContent.toLowerCase();
-    const match = Object.keys(products).find(k => name.includes(k.replace('-', ' ')) || name.includes(products[k].name.toLowerCase().split(' ')[0].toLowerCase()));
-    if (match) showDetail(match);
-  });
+closeBtn.addEventListener('click', unlockDetail);
+document.addEventListener('keydown', function(e) { if (e.key==='Escape'&&isLocked) unlockDetail(); });
+document.addEventListener('keydown', function(e) {
+  if (e.key==='ArrowRight'||e.key==='ArrowLeft') {
+    var na=Array.from(nodes), idx=na.indexOf(document.activeElement);
+    if (idx!==-1) { e.preventDefault(); var n=e.key==='ArrowRight'?(idx+1)%na.length:(idx-1+na.length)%na.length; na[n].focus(); showDetail(na[n].getAttribute('data-product'),false); }
+  }
 });
 
-// Default: show Devin
-setTimeout(() => showDetail('devin'), 400);
+/* Matrix row interactions */
+document.querySelectorAll('.matrix-table tbody tr').forEach(function(row) {
+  var pk=row.getAttribute('data-product');
+  row.addEventListener('click', function() {
+    if (pk&&products[pk]) { showDetail(pk,true); var nd=document.querySelector('.product-node[data-product="'+pk+'"]'); if(nd) nd.scrollIntoView({behavior:'smooth',block:'center'}); }
+  });
+  row.addEventListener('mouseenter', function() { if (!isLocked&&pk&&products[pk]) showDetail(pk,false); });
+  row.addEventListener('mouseleave', function() { if (!isLocked) resetDetail(); });
+});
+
+/* Column hover highlighting */
+var mt=document.querySelector('.matrix-table');
+if(mt) { mt.querySelectorAll('th').forEach(function(th,ci) {
+  th.addEventListener('mouseenter', function() {
+    mt.querySelectorAll('th').forEach(function(h,i){h.classList.toggle('col-highlight',i===ci);});
+    mt.querySelectorAll('tbody tr').forEach(function(r){r.querySelectorAll('td').forEach(function(td,i){td.classList.toggle('col-highlight',i===ci);});});
+  });
+  th.addEventListener('mouseleave', function() {
+    mt.querySelectorAll('th').forEach(function(h){h.classList.remove('col-highlight');});
+    mt.querySelectorAll('tbody td').forEach(function(td){td.classList.remove('col-highlight');});
+  });
+});}
+
+/* Scroll reveal with Intersection Observer */
+var ro=new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if(e.isIntersecting) { e.target.classList.add('visible'); e.target.querySelectorAll('.matrix-table tbody tr').forEach(function(r,i){setTimeout(function(){r.classList.add('row-visible');},i*80);}); }});
+},{threshold:0.15});
+document.querySelectorAll('.scroll-reveal').forEach(function(el){ro.observe(el);});
+
+/* Particle System */
+var pc=document.getElementById('particle-canvas'), px=pc.getContext('2d'), pts=[];
+function rpc(){var c=pc.parentElement;pc.width=c.offsetWidth;pc.height=c.offsetHeight;}
+function Pt(){this.reset();}
+Pt.prototype.reset=function(){var s=document.getElementById('venn'),r=s.getBoundingClientRect(),c=pc.parentElement.getBoundingClientRect();this.x=(r.left-c.left)+r.width*(392/680)+(Math.random()-0.5)*60;this.y=(r.top-c.top)+r.height*(255/520)+(Math.random()-0.5)*60;this.vx=(Math.random()-0.5)*0.3;this.vy=-Math.random()*0.5-0.2;this.life=Math.random()*120+60;this.ml=this.life;this.sz=Math.random()*2+0.5;};
+Pt.prototype.update=function(){this.x+=this.vx;this.y+=this.vy;this.life--;if(this.life<=0)this.reset();};
+Pt.prototype.draw=function(ctx){var a=Math.min(this.life/this.ml,(this.ml-this.life)/20)*0.6;ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);ctx.fillStyle='rgba(255,209,102,'+a+')';ctx.fill();};
+function ip(){rpc();pts=[];for(var i=0;i<20;i++)pts.push(new Pt());}
+function ap(){px.clearRect(0,0,pc.width,pc.height);pts.forEach(function(p){p.update();p.draw(px);});requestAnimationFrame(ap);}
+setTimeout(function(){ip();ap();},500);
+window.addEventListener('resize',function(){rpc();pts.forEach(function(p){p.reset();});});
+
+/* Confetti Easter Egg */
+function triggerConfetti(){var c=['#ffd166','#00c9b1','#4f8ef7','#9b7bff','#f5a623','#fff'];for(var i=0;i<80;i++){var e=document.createElement('div');e.className='confetti-piece';e.style.left=Math.random()*100+'vw';e.style.top='-10px';e.style.width=Math.random()*8+4+'px';e.style.height=Math.random()*8+4+'px';e.style.background=c[Math.floor(Math.random()*c.length)];e.style.borderRadius=Math.random()>0.5?'50%':'2px';e.style.animationDuration=(Math.random()*1.5+1)+'s';e.style.animationDelay=Math.random()*0.5+'s';document.body.appendChild(e);(function(el){setTimeout(function(){el.remove();},3000);})(e);}}
+
+/* Auto-show Devin on load */
+setTimeout(function(){showDetail('devin',false);},600);
 </script>
 </body>
 </html>
