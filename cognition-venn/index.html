@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agentic Coding Landscape — Where Devin Stands Apart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0d14;
+    --surface: #111522;
+    --surface2: #181f30;
+    --border: rgba(255,255,255,0.07);
+    --teal: #00c9b1;
+    --teal-dim: rgba(0,201,177,0.12);
+    --teal-glow: rgba(0,201,177,0.25);
+    --blue: #4f8ef7;
+    --blue-dim: rgba(79,142,247,0.12);
+    --purple: #9b7bff;
+    --purple-dim: rgba(155,123,255,0.12);
+    --amber: #f5a623;
+    --text: #e8ecf4;
+    --text-dim: #8892a4;
+    --text-faint: #4a5568;
+    --devin-gold: #ffd166;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 40px 48px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-left h1 {
+    font-size: 26px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, var(--teal) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  .header-left p {
+    font-size: 14px; color: var(--text-dim); max-width: 560px; line-height: 1.6;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--teal-dim); border: 1px solid var(--teal);
+    color: var(--teal); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    padding: 5px 12px; border-radius: 20px; white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    min-height: calc(100vh - 120px);
+  }
+
+  /* ── VENN CANVAS ── */
+  .venn-area {
+    padding: 40px 32px 32px 48px;
+    position: relative;
+  }
+
+  .venn-container {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  svg#venn {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Circle fills */
+  .c-copilot { fill: var(--blue); opacity: 0.08; }
+  .c-autonomous { fill: var(--teal); opacity: 0.08; }
+  .c-enterprise { fill: var(--purple); opacity: 0.08; }
+
+  /* Circle strokes */
+  .ring-copilot { fill: none; stroke: var(--blue); stroke-width: 1.5; opacity: 0.5; }
+  .ring-autonomous { fill: none; stroke: var(--teal); stroke-width: 1.5; opacity: 0.5; }
+  .ring-enterprise { fill: none; stroke: var(--purple); stroke-width: 1.5; opacity: 0.5; }
+
+  /* Devin glow */
+  .devin-glow {
+    fill: radial-gradient(circle, var(--devin-gold), transparent);
+    filter: url(#glow);
+  }
+
+  /* Labels */
+  .circle-label {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .lbl-copilot { fill: var(--blue); }
+  .lbl-autonomous { fill: var(--teal); }
+  .lbl-enterprise { fill: var(--purple); }
+
+  /* Product nodes */
+  .product-node {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .product-node:hover .node-circle { filter: brightness(1.4); }
+  .product-node:hover .node-label { opacity: 1 !important; }
+
+  .node-circle {
+    transition: filter 0.2s, r 0.2s;
+  }
+
+  .node-label {
+    font-size: 10px; font-weight: 600;
+    dominant-baseline: central;
+    text-anchor: middle;
+    pointer-events: none;
+    fill: white;
+    opacity: 0.85;
+    letter-spacing: 0.2px;
+  }
+
+  /* Devin star */
+  .devin-node .node-circle {
+    fill: var(--devin-gold);
+    filter: drop-shadow(0 0 8px rgba(255,209,102,0.7));
+  }
+  .devin-node .node-label {
+    font-size: 11px; font-weight: 800; fill: #0a0d14; opacity: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    border-left: 1px solid var(--border);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  /* Detail card */
+  #detail-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    min-height: 180px;
+    transition: border-color 0.3s;
+  }
+  #detail-card.active { border-color: var(--teal); }
+  #detail-card .dc-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  #detail-card .dc-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  #detail-card .dc-name {
+    font-size: 15px; font-weight: 700; color: var(--text);
+  }
+  #detail-card .dc-tagline {
+    font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px;
+  }
+  #detail-card .dc-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+  }
+  #detail-card .dc-tag {
+    font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 12px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  #detail-card .dc-tag.blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(79,142,247,0.3); }
+  #detail-card .dc-tag.teal { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,201,177,0.3); }
+  #detail-card .dc-tag.purple { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(155,123,255,0.3); }
+  #detail-card .dc-tag.gold { background: rgba(255,209,102,0.12); color: var(--devin-gold); border: 1px solid rgba(255,209,102,0.35); }
+  #detail-card .dc-note {
+    font-size: 12px; color: var(--text-dim); line-height: 1.6;
+    border-top: 1px solid var(--border); padding-top: 12px;
+  }
+
+  /* Devin uniqueness panel */
+  .devin-panel {
+    background: linear-gradient(135deg, rgba(255,209,102,0.06) 0%, rgba(0,201,177,0.06) 100%);
+    border: 1px solid rgba(255,209,102,0.25);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .devin-panel-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--devin-gold); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .devin-panel-title::before {
+    content: '★'; font-size: 13px;
+  }
+  .devin-differentiator {
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+  }
+  .devin-differentiator:last-child { margin-bottom: 0; }
+  .devin-differentiator .icon {
+    font-size: 14px; flex-shrink: 0; margin-top: 1px;
+  }
+  .devin-differentiator .dd-content h4 {
+    font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px;
+  }
+  .devin-differentiator .dd-content p {
+    font-size: 11px; color: var(--text-dim); line-height: 1.5;
+  }
+
+  /* Legend */
+  .legend {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 12px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-text { font-size: 11px; color: var(--text-dim); }
+  .legend-line {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .legend-ring {
+    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid; background: transparent;
+  }
+
+  /* Hover prompt */
+  #hover-prompt {
+    text-align: center; padding: 28px 0;
+    color: var(--text-faint); font-size: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  #hover-prompt svg { opacity: 0.4; }
+
+  /* ── BOTTOM MATRIX ── */
+  .matrix-section {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    grid-column: 1 / -1;
+  }
+  .matrix-title {
+    font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 20px;
+    letter-spacing: -0.2px;
+  }
+  .matrix-title span { color: var(--text-dim); font-weight: 400; margin-left: 8px; font-size: 13px; }
+
+  .matrix-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  .matrix-table th {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--text-dim); padding: 8px 12px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix-table td {
+    padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-dim); vertical-align: middle;
+  }
+  .matrix-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .matrix-table td:first-child { font-weight: 600; color: var(--text); }
+  .matrix-table tr.devin-row td { background: rgba(255,209,102,0.04); }
+  .matrix-table tr.devin-row td:first-child { color: var(--devin-gold); }
+
+  .check { color: var(--teal); font-size: 14px; }
+  .partial { color: var(--amber); font-size: 13px; }
+  .cross { color: var(--text-faint); font-size: 13px; }
+
+  /* tooltip */
+  #tooltip {
+    position: fixed;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-dim);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 220px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  #tooltip.visible { opacity: 1; }
+  #tooltip strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Agentic Coding Platform Landscape</h1>
+    <p>Understanding where Devin (Cognition) fits — and why it stands apart from every other platform in the market. Hover over any product to explore its positioning. Click to see details.</p>
+  </div>
+  <div class="badge">Confidential · March 2026</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- VENN -->
+  <div class="venn-area">
+    <div class="venn-container">
+      <svg id="venn" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+          <filter id="node-glow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+          <radialGradient id="devin-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffd166" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#ffd166" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- ── Circle fills ── -->
+        <!-- AI Copilot (top-left, blue) -->
+        <circle cx="240" cy="210" r="185" class="c-copilot"/>
+        <!-- Autonomous Agent (bottom-center, teal) -->
+        <circle cx="390" cy="340" r="185" class="c-autonomous"/>
+        <!-- Enterprise Ready (top-right, purple) -->
+        <circle cx="490" cy="185" r="185" class="c-enterprise"/>
+
+        <!-- ── Circle rings ── -->
+        <circle cx="240" cy="210" r="185" class="ring-copilot"/>
+        <circle cx="390" cy="340" r="185" class="ring-autonomous"/>
+        <circle cx="490" cy="185" r="185" class="ring-enterprise"/>
+
+        <!-- ── Circle labels ── -->
+        <text x="100" y="90" class="circle-label lbl-copilot">AI Copilot</text>
+        <text x="100" y="107" class="circle-label lbl-copilot" font-size="10" font-weight="400" fill="#4f8ef7" opacity="0.7">In-IDE / Dev-led</text>
+
+        <text x="265" y="500" class="circle-label lbl-autonomous">Autonomous</text>
+        <text x="275" y="517" class="circle-label lbl-autonomous" font-size="10" font-weight="400" fill="#00c9b1" opacity="0.7">Agent / Async</text>
+
+        <text x="545" y="72" class="circle-label lbl-enterprise">Enterprise</text>
+        <text x="548" y="89" class="circle-label lbl-enterprise" font-size="10" font-weight="400" fill="#9b7bff" opacity="0.7">Governance</text>
+
+        <!-- ── Devin glow zone ── -->
+        <circle cx="392" cy="258" r="72" fill="url(#devin-grad)"/>
+
+        <!-- ══ PRODUCT NODES ══ -->
+
+        <!-- Cursor — AI Copilot zone, not enterprise, some autonomy -->
+        <g class="product-node" data-product="cursor" transform="translate(120, 175)">
+          <circle class="node-circle" r="30" fill="#4f8ef7" opacity="0.75"/>
+          <text class="node-label" y="0">Cursor</text>
+        </g>
+
+        <!-- Windsurf — AI Copilot zone -->
+        <g class="product-node" data-product="windsurf" transform="translate(168, 268)">
+          <circle class="node-circle" r="26" fill="#5599ff" opacity="0.7"/>
+          <text class="node-label" y="0">Windsurf</text>
+        </g>
+
+        <!-- GitHub Copilot standard — Copilot + Enterprise -->
+        <g class="product-node" data-product="github-copilot" transform="translate(355, 128)">
+          <circle class="node-circle" r="28" fill="#7a6fff" opacity="0.8"/>
+          <text class="node-label" y="-6">GitHub</text>
+          <text class="node-label" y="8">Copilot</text>
+        </g>
+
+        <!-- Replit — Copilot + some Autonomy, not enterprise -->
+        <g class="product-node" data-product="replit" transform="translate(226, 340)">
+          <circle class="node-circle" r="24" fill="#3d9be9" opacity="0.75"/>
+          <text class="node-label" y="0">Replit</text>
+        </g>
+
+        <!-- GH Copilot Workspace — all three, center-ish -->
+        <g class="product-node" data-product="copilot-workspace" transform="translate(368, 192)">
+          <circle class="node-circle" r="30" fill="#8b6cff" opacity="0.8"/>
+          <text class="node-label" y="-6">Copilot</text>
+          <text class="node-label" y="7">Workspace</text>
+        </g>
+
+        <!-- Amazon Q — Autonomous + Enterprise, AWS-locked -->
+        <g class="product-node" data-product="amazon-q" transform="translate(498, 290)">
+          <circle class="node-circle" r="28" fill="#9b7bff" opacity="0.8"/>
+          <text class="node-label" y="-5">Amazon</text>
+          <text class="node-label" y="7">Q Dev</text>
+        </g>
+
+        <!-- OpenAI Codex — Autonomous zone, growing enterprise -->
+        <g class="product-node" data-product="openai-codex" transform="translate(428, 390)">
+          <circle class="node-circle" r="30" fill="#00b89e" opacity="0.8"/>
+          <text class="node-label" y="-5">OpenAI</text>
+          <text class="node-label" y="7">Codex</text>
+        </g>
+
+        <!-- Devin (Cognition) — Center, all three + unique -->
+        <g class="product-node devin-node" data-product="devin" transform="translate(392, 255)">
+          <circle class="node-circle" r="38" opacity="1"/>
+          <!-- star ring -->
+          <circle r="44" fill="none" stroke="#ffd166" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+          <text class="node-label" y="-6" font-size="12">Devin</text>
+          <text class="node-label" y="7" font-size="9" opacity="0.85">(Cognition)</text>
+        </g>
+
+        <!-- Zone annotation lines -->
+        <line x1="392" y1="211" x2="392" y2="170" stroke="#ffd166" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+        <text x="392" y="162" fill="#ffd166" font-size="10" font-weight="600" text-anchor="middle" opacity="0.8">★ Unique Zone</text>
+
+      </svg>
+    </div>
+
+    <!-- Zone key -->
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:8px; padding-left: 24px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:12px;height:12px;border-radius:3px;background:var(--blue);opacity:0.8;"></div>
+        <span style="font-size:11px;color:var(--text-dim);">AI Copilot — in-IDE, developer-led assistance</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:12px;height:12px;border-radius:3px;background:var(--teal);opacity:0.8;"></div>
+        <span style="font-size:11px;color:var(--text-dim);">Autonomous Agent — async, multi-step, independent execution</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:12px;height:12px;border-radius:3px;background:var(--purple);opacity:0.8;"></div>
+        <span style="font-size:11px;color:var(--text-dim);">Enterprise Ready — governance, compliance, audit controls</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Product Detail</div>
+
+    <div id="detail-card">
+      <div id="hover-prompt">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+        </svg>
+        <span>Hover over any product<br/>on the diagram to explore</span>
+      </div>
+    </div>
+
+    <div class="devin-panel">
+      <div class="devin-panel-title">What Makes Devin Unique</div>
+
+      <div class="devin-differentiator">
+        <span class="icon">🖥️</span>
+        <div class="dd-content">
+          <h4>Persistent VM Workspace</h4>
+          <p>Devin maintains state across the full session — memory, files, browser, terminal — unlike stateless code-gen tools.</p>
+        </div>
+      </div>
+
+      <div class="devin-differentiator">
+        <span class="icon">⏱️</span>
+        <div class="dd-content">
+          <h4>Long-Horizon Autonomy</h4>
+          <p>Works independently for 7+ hours on complex tasks. Not a copilot — a software engineer that takes tickets end-to-end.</p>
+        </div>
+      </div>
+
+      <div class="devin-differentiator">
+        <span class="icon">🏛️</span>
+        <div class="dd-content">
+          <h4>Enterprise Governance</h4>
+          <p>ACU budgets, audit trails, SSO, and compliance-ready deployment. Purpose-built for regulated industries.</p>
+        </div>
+      </div>
+
+      <div class="devin-differentiator">
+        <span class="icon">🤝</span>
+        <div class="dd-content">
+          <h4>SI-Embedded Distribution</h4>
+          <p>Infosys & Cognizant deploy Devin inside enterprise banking engagements — a channel no competitor has replicated.</p>
+        </div>
+      </div>
+
+      <div class="devin-differentiator">
+        <span class="icon">⚙️</span>
+        <div class="dd-content">
+          <h4>Legacy Modernization Depth</h4>
+          <p>Proven COBOL-to-modern migration. Infosys: "complex migrations shifted from long resource-heavy undertakings to streamlined processes."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-title">Hover Guide</div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--devin-gold);box-shadow:0 0 6px rgba(255,209,102,0.6);"></div>
+        <span class="legend-text">Devin — sits at all three intersections</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--blue);opacity:0.8;"></div>
+        <span class="legend-text">Copilot-first tools</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--teal);opacity:0.8;"></div>
+        <span class="legend-text">Autonomous-first tools</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--purple);opacity:0.8;"></div>
+        <span class="legend-text">Enterprise-integrated tools</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MATRIX TABLE -->
+<div class="matrix-section" style="grid-column: 1 / -1;">
+  <div class="matrix-title">Capability Comparison Matrix <span>Click any row to highlight</span></div>
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="width:160px;">Platform</th>
+        <th>In-IDE Assist</th>
+        <th>Autonomous Agent</th>
+        <th>Long-Horizon Tasks</th>
+        <th>Persistent Workspace</th>
+        <th>Enterprise Governance</th>
+        <th>SI Channel</th>
+        <th>Legacy Modernisation</th>
+        <th>Async / Background</th>
+        <th>Multi-agent Parallel</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="devin-row">
+        <td>★ Devin (Cognition)</td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">7h+</small></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">ACU + audit</small></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">Infosys, Cognizant</small></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">COBOL proven</small></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+      </tr>
+      <tr>
+        <td>OpenAI Codex</td>
+        <td><span class="cross">○</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">growing</small></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">emerging</small></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+      </tr>
+      <tr>
+        <td>GitHub Copilot Workspace</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">MS ecosystem</small></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+      </tr>
+      <tr>
+        <td>Amazon Q Developer</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="check">✓</span> <small style="color:var(--text-dim);">AWS-specific</small></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="partial">◑</span></td>
+      </tr>
+      <tr>
+        <td>Cursor</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">agent mode</small></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">8 agents</small></td>
+      </tr>
+      <tr>
+        <td>Windsurf (Codeium)</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">◑</span> <small style="color:var(--text-dim);">Cascade</small></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+      </tr>
+      <tr>
+        <td>Replit Agent</td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">◑</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+        <td><span class="cross">○</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:var(--text-dim);"><span class="check">✓</span> Full capability</span>
+    <span style="font-size:11px;color:var(--text-dim);"><span class="partial">◑</span> Partial / emerging</span>
+    <span style="font-size:11px;color:var(--text-dim);"><span class="cross">○</span> Not available</span>
+    <span style="font-size:11px;color:var(--text-faint);margin-left:auto;">Sources: Cognition Labs, OpenAI, GitHub, AWS, analyst research — March 2026</span>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tooltip"></div>
+
+<script>
+const products = {
+  'cursor': {
+    name: 'Cursor',
+    color: '#4f8ef7',
+    tagline: 'An AI-native IDE forked from VS Code. Excellent inline code generation and multi-file editing. The default choice for individual developers and small teams.',
+    tags: [{label:'AI Copilot', type:'blue'}, {label:'IDE-first', type:'blue'}],
+    note: 'Agent mode added Feb 2026 allows up to 8 parallel worktrees, but still developer-in-the-loop. No enterprise governance or persistent workspace. Credit-based pricing can create cost surprises.'
+  },
+  'windsurf': {
+    name: 'Windsurf (Codeium)',
+    color: '#5599ff',
+    tagline: 'Codeium\'s AI-native editor with Cascade agent providing deep codebase understanding and multi-step task execution across sessions.',
+    tags: [{label:'AI Copilot', type:'blue'}, {label:'Cascade Agent', type:'blue'}],
+    note: 'Strong IDE experience with context-aware Cascade agent. Consumer/prosumer positioned. No enterprise governance controls, no async background operation, no SI channel.'
+  },
+  'github-copilot': {
+    name: 'GitHub Copilot',
+    color: '#7a6fff',
+    tagline: 'Microsoft\'s flagship AI coding assistant. Deeply integrated into the GitHub/VS Code ecosystem with per-seat enterprise licensing.',
+    tags: [{label:'AI Copilot', type:'blue'}, {label:'Enterprise', type:'purple'}],
+    note: 'Dominant in enterprise because of Microsoft procurement trust and GitHub integration. Copilot standard is in-IDE autocomplete, not autonomous. See Copilot Workspace for agentic features.'
+  },
+  'copilot-workspace': {
+    name: 'GitHub Copilot Workspace',
+    color: '#8b6cff',
+    tagline: 'GitHub\'s task-centric agentic layer. Takes a GitHub Issue and plans, writes code, runs tests, and opens PRs — scoring 55% on SWE-bench Verified.',
+    tags: [{label:'AI Copilot', type:'blue'}, {label:'Agentic', type:'teal'}, {label:'Enterprise', type:'purple'}],
+    note: 'Strong enterprise distribution via Microsoft. Crosses all three circles BUT is IDE-bound (requires GitHub issues as entry point), lacks persistent VM, and has limited async capability. Not industry-vertical aware.'
+  },
+  'amazon-q': {
+    name: 'Amazon Q Developer',
+    color: '#9b7bff',
+    tagline: 'AWS\'s enterprise coding agent. Deeply integrated with AWS services. Hit 66% on SWE-Bench in April 2025 — top of commercial leaderboards at the time.',
+    tags: [{label:'Agentic', type:'teal'}, {label:'Enterprise', type:'purple'}, {label:'AWS-locked', type:'purple'}],
+    note: 'Strong for AWS-centric enterprises. Excellent governance via AWS IAM and CloudTrail. However, value proposition is tied to AWS ecosystem — not cloud-agnostic. No SI channel or legacy mainframe positioning.'
+  },
+  'openai-codex': {
+    name: 'OpenAI Codex',
+    color: '#00b89e',
+    tagline: 'OpenAI\'s cloud-based coding agent powered by GPT-5.x-Codex. Capable of multi-hour autonomous tasks, parallel agents, and full software lifecycle support.',
+    tags: [{label:'Autonomous', type:'teal'}, {label:'Multi-agent', type:'teal'}],
+    note: 'The most significant new competitor. GPT-5.3-Codex works independently for 7h+ on complex tasks. Strong autonomy but enterprise governance is still emerging. No SI channel, no persistent VM (stateless cloud), no proven legacy modernisation track record. OpenAI\'s distribution advantage is real — but enterprise procurement is not yet locked in.'
+  },
+  'devin': {
+    name: '★ Devin (Cognition Labs)',
+    color: '#ffd166',
+    tagline: 'The world\'s first fully autonomous AI software engineer. Grew from $1M ARR (Sep 2024) to $73M ARR (Jun 2025). Valued at $10.2B. The only platform purpose-built to be a software engineer, not a coding tool.',
+    tags: [{label:'Fully Autonomous', type:'gold'}, {label:'Enterprise Gov.', type:'gold'}, {label:'Persistent VM', type:'gold'}, {label:'SI-Embedded', type:'gold'}],
+    note: '★ UNIQUE ZONE: Devin is the only platform that combines (1) true long-horizon autonomy, (2) persistent workspace with full dev environment state, (3) enterprise governance (ACU budgets, audit trails), (4) SI-embedded distribution via Infosys & Cognizant, and (5) proven COBOL/legacy modernisation. Codex has autonomy but lacks 3, 4, and 5. GitHub Workspace has governance but lacks 1, 2, and 4. Nobody else plays all five.'
+  }
+};
+
+const nodes = document.querySelectorAll('.product-node');
+const detailCard = document.getElementById('detail-card');
+const tooltip = document.getElementById('tooltip');
+let activeProduct = null;
+
+function showDetail(productKey) {
+  const p = products[productKey];
+  if (!p) return;
+  activeProduct = productKey;
+  detailCard.classList.add('active');
+
+  const tagsHTML = p.tags.map(t => `<span class="dc-tag ${t.type}">${t.label}</span>`).join('');
+
+  detailCard.innerHTML = `
+    <div class="dc-header">
+      <div class="dc-dot" style="background:${p.color};box-shadow:0 0 6px ${p.color}55;"></div>
+      <div class="dc-name">${p.name}</div>
+    </div>
+    <div class="dc-tagline">${p.tagline}</div>
+    <div class="dc-tags">${tagsHTML}</div>
+    <div class="dc-note">${p.note}</div>
+  `;
+}
+
+function resetDetail() {
+  activeProduct = null;
+  detailCard.classList.remove('active');
+  detailCard.innerHTML = `
+    <div id="hover-prompt">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+      </svg>
+      <span>Hover over any product<br/>on the diagram to explore</span>
+    </div>
+  `;
+}
+
+nodes.forEach(node => {
+  const key = node.getAttribute('data-product');
+  const p = products[key];
+  if (!p) return;
+
+  node.addEventListener('mouseenter', (e) => {
+    tooltip.innerHTML = `<strong>${p.name}</strong>${p.tagline.substring(0, 80)}...`;
+    tooltip.classList.add('visible');
+    showDetail(key);
+  });
+
+  node.addEventListener('mousemove', (e) => {
+    tooltip.style.left = (e.clientX + 14) + 'px';
+    tooltip.style.top = (e.clientY - 10) + 'px';
+  });
+
+  node.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('visible');
+  });
+
+  node.addEventListener('click', () => {
+    showDetail(key);
+  });
+});
+
+// Matrix row clicks
+document.querySelectorAll('.matrix-table tbody tr').forEach(row => {
+  row.style.cursor = 'pointer';
+  row.addEventListener('click', () => {
+    const name = row.querySelector('td:first-child').textContent.toLowerCase();
+    const match = Object.keys(products).find(k => name.includes(k.replace('-', ' ')) || name.includes(products[k].name.toLowerCase().split(' ')[0].toLowerCase()));
+    if (match) showDetail(match);
+  });
+});
+
+// Default: show Devin
+setTimeout(() => showDetail('devin'), 400);
+</script>
+</body>
+</html>
